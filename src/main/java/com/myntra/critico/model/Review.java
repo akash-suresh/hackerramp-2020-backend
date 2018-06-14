@@ -26,6 +26,7 @@ public class Review {
     private String sourceName; //eg amazon, flipkart, mouthshut
     private String sourceUrl;  //eg amazon.in
     private String sourceImgUrl;
+    private String timeOfReview;
 
     private Long productId;
 
@@ -126,4 +127,8 @@ public class Review {
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    public String getTimeOfReview() { return timeOfReview; }
+
+    public void setTimeOfReview(String timeOfReview) { this.timeOfReview = timeOfReview; }
 }
