@@ -3,6 +3,8 @@ package com.myntra.critico.controller;
 import com.myntra.critico.exception.ResourceNotFoundException;
 import com.myntra.critico.manager.InstagramManager;
 import com.myntra.critico.model.Product;
+import com.myntra.critico.model.ProductResponse;
+import com.myntra.critico.model.Review;
 import com.myntra.critico.model.Review;
 import com.myntra.critico.repository.ProductRepository;
 import com.myntra.critico.repository.ReviewRepository;
@@ -13,9 +15,12 @@ import twitter4j.TwitterException;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Objects;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/api")
 public class ProductController {
@@ -40,9 +45,36 @@ public class ProductController {
     }
 
     @GetMapping("/products/{id}")
-    public Product getProductById(@PathVariable(value = "id") Long productId) {
-        return productRepository.findById(productId)
+    public ProductResponse getProductById(@PathVariable(value = "id") Long productId) {
+        Product product= productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "id", productId));
+
+        ProductResponse productResponse = new ProductResponse();
+        if(Objects.nonNull(product)) {
+            productResponse.setProductName(product.getProductName());
+            productResponse.setProductDescription(product.getProductDescription());
+            productResponse.setProductLargeImgURL(product.getProductLargeImgURL());
+
+            List<Review> socialReviews= new ArrayList<>();
+            List<Review> videoReviews= new ArrayList<>();
+            List<Review> userReviews= new ArrayList<>();
+            for(Review review : product.getReviews()){
+                if("youtube".equals(review.getSourceName())){
+                    videoReviews.add(review);
+                }
+                else if("instagram".equals(review.getSourceName())){
+                    socialReviews.add(review);
+                }
+                else if("flipkart".equals(review.getSourceName()) || "amazon".equals(review.getSourceName())) {
+                    userReviews.add(review);
+                }
+            }
+            productResponse.setSocialReviews(socialReviews);
+            productResponse.setVideoReviews(videoReviews);
+            productResponse.setUserReviews(userReviews);
+        }
+
+        return productResponse;
     }
 
     @RequestMapping(value = "/twitter",method = RequestMethod.GET)
