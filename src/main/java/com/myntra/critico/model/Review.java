@@ -21,6 +21,7 @@ public class Review {
     private String reviewerName;
     private String reviewerThumbnailImgUrl;
     private int reviewRating;
+    private String reviewTitle;
     private String reviewContent;
     private String reviewPermaLink;
     private String sourceName; //eg amazon, flipkart, mouthshut
@@ -131,4 +132,20 @@ public class Review {
     public String getTimeOfReview() { return timeOfReview; }
 
     public void setTimeOfReview(String timeOfReview) { this.timeOfReview = timeOfReview; }
+
+    public String getReviewTitle() {
+        return reviewTitle;
+    }
+
+    public void setReviewTitle(String reviewTitle) {
+        this.reviewTitle = reviewTitle;
+    }
+
+    public Long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
+    }
 }
