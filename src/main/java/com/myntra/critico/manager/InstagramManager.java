@@ -96,6 +96,10 @@ public class InstagramManager {
 
         ResponseList<Status> userTimeline = twitter.getUserTimeline(twitter.getId(), new Paging(1, 100));
         String testword = product.getProductName();
+        System.out.println("looking for  "+testword);
+        testword=testword.replaceAll(" ","").toLowerCase();
+//        testword="oneplus";
+        System.out.println("made to look "+testword);
         for (Status status : userTimeline) {
             if (status.getText().contains(testword)) {
                 Review review = new Review();
@@ -106,8 +110,10 @@ public class InstagramManager {
                 review.setReviewerThumbnailImgUrl(status.getUser().getProfileImageURL());
                 review.setProductId(product.getId());
                 reviews.add(review);
+                System.out.println("got one "+review.getReviewContent());
             }
         }
+        System.out.println("collected "+reviews.size());
         return reviews;
     }
 

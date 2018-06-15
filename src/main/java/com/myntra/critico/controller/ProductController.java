@@ -62,7 +62,7 @@ public class ProductController {
                 if("youtube".equals(review.getSourceName())){
                     videoReviews.add(review);
                 }
-                else if("instagram".equals(review.getSourceName())){
+                else if("instagram".equals(review.getSourceName()) || "Twitter".equals(review.getSourceName())){
                     socialReviews.add(review);
                 }
                 else if("flipkart".equals(review.getSourceName()) || "amazon".equals(review.getSourceName())) {
@@ -101,6 +101,7 @@ public class ProductController {
 
     @RequestMapping(value = "/socialreview/{id}",method = RequestMethod.GET)
     public @ResponseBody List<Review> getSocialReviews(@PathVariable(value = "id") Long productId) {
+        System.out.println("I am here with prodid "+productId);
 
         Optional<Product> product = productRepository.findById(productId);
         if(!product.isPresent()){
@@ -113,6 +114,7 @@ public class ProductController {
                     reviewRepository.save(review);
                 }catch (Exception e){ }
             }
+            System.out.println("I am here with size "+twitterReviews.size());
             return twitterReviews;
         } catch (TwitterException e) {
             e.printStackTrace();
