@@ -77,16 +77,16 @@ public class ProductController {
         return productResponse;
     }
 
-    @RequestMapping(value = "/twitter",method = RequestMethod.GET)
-    public @ResponseBody void getOAuthForTwitter(@RequestParam("oauth_token") String token,@RequestParam("oauth_verifier") String verifier) {
-        System.out.print("abc");
+    @RequestMapping(value = "/twitter",method = RequestMethod.GET ,produces = {"text/html"})
+    public @ResponseBody String getOAuthForTwitter(@RequestParam("oauth_token") String token,@RequestParam("oauth_verifier") String verifier) {
         try {
-            instagramManager.processTwitterData(token,verifier);
+            return instagramManager.processTwitterData(token,verifier);
         } catch (TwitterException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     @RequestMapping(value = "/twitter/oauth",method = RequestMethod.GET)

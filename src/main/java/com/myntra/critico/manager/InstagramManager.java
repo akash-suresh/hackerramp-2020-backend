@@ -67,10 +67,26 @@ public class InstagramManager {
     }
 
 
-    public void processTwitterData(String token, String verifier) throws TwitterException, IOException {
+    public String processTwitterData(String token, String verifier) throws TwitterException, IOException {
 
         AccessToken accessToken = twitter.getOAuthAccessToken(requestToken, verifier);
         twitter.setOAuthAccessToken(accessToken);
+        return "<html>\n" +
+                "<body>\n" +
+                "\n" +
+                "<h2>Success</h2>\n" +
+                "\n" +
+                "Click <button onclick=\"myFunction()\">here</button> to close this.\n" +
+                "\n" +
+                "<script>\n" +
+                "function myFunction() {\n" +
+                "    window.close();" +
+                "}\n" +
+                "</script>\n" +
+                "\n" +
+                "</body>\n" +
+                "</html>";
+
 
     }
 
