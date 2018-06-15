@@ -98,15 +98,15 @@ public class InstagramManager {
         String testword = product.getProductName();
         System.out.println("looking for  "+testword);
         testword=testword.replaceAll(" ","").toLowerCase();
-//        testword="oneplus";
         System.out.println("made to look "+testword);
         for (Status status : userTimeline) {
             if (status.getText().contains(testword)) {
                 Review review = new Review();
-                review.setReviewerName(status.getUser().getScreenName());
+                review.setReviewerName(status.getUser().getName());
                 review.setReviewContent(status.getText());
                 review.setSourceName("Twitter");
                 review.setCreatedAt(status.getCreatedAt());
+                review.setTimeOfReview(status.getCreatedAt().toString());
                 review.setReviewerThumbnailImgUrl(status.getUser().getProfileImageURL());
                 review.setProductId(product.getId());
                 reviews.add(review);
