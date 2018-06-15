@@ -68,6 +68,10 @@ public class ProductController {
                 else if("flipkart".equals(review.getSourceName()) || "amazon".equals(review.getSourceName())) {
                     userReviews.add(review);
                 }
+                else if("gsmarena".equals(review.getSourceName()) || "gadgetsnow".equals(review.getSourceName())) {
+                    userReviews.add(review);
+                }
+
             }
             productResponse.setSocialReviews(socialReviews);
             productResponse.setVideoReviews(videoReviews);

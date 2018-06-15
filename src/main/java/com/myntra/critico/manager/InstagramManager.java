@@ -102,11 +102,13 @@ public class InstagramManager {
         for (Status status : userTimeline) {
             if (status.getText().contains(testword)) {
                 Review review = new Review();
-                review.setReviewerName(status.getUser().getName());
+                review.setReviewerName("@"+status.getUser().getScreenName());
                 review.setReviewContent(status.getText());
                 review.setSourceName("Twitter");
                 review.setCreatedAt(status.getCreatedAt());
-                review.setTimeOfReview(status.getCreatedAt().toString());
+                String a = status.getCreatedAt().toString();
+                String[] b = a.split(" ");
+                review.setTimeOfReview(b[2]+' '+b[1]+ ' '+b[5]);
                 review.setReviewerThumbnailImgUrl(status.getUser().getProfileImageURL());
                 review.setProductId(product.getId());
                 reviews.add(review);
