@@ -93,8 +93,27 @@ public class InstagramManager {
     public List<Review> getTwitterReviews(Product product) throws TwitterException {
 
         List<Review> reviews = new ArrayList<>();
-        PagableResponseList<User> friendsList = twitter.getFriendsList(twitter.getId(), -10);
-        for (int i = 0; i < friendsList.size(); i++) {
+
+        ResponseList<Status> userTimeline = twitter.getUserTimeline(twitter.getId(), new Paging(1, 100));
+        String testword = product.getProductName();
+        for (Status status : userTimeline) {
+            if (status.getText().contains(testword)) {
+                Review review = new Review();
+                review.setReviewerName(status.getUser().getScreenName());
+                review.setReviewContent(status.getText());
+                review.setSourceName("Twitter");
+                review.setCreatedAt(status.getCreatedAt());
+                review.setReviewerThumbnailImgUrl(status.getUser().getProfileImageURL());
+                review.setProductId(product.getId());
+                reviews.add(review);
+            }
+        }
+        return reviews;
+    }
+
+
+//PagableResponseList<User> friendsList = twitter.getFriendsList(twitter.getId(), -10);
+        /*for (int i = 0; i < friendsList.size(); i++) {
             User user = friendsList.get(i);
 
             ResponseList<Status> userTimeline = twitter.getUserTimeline(user.getId(), new Paging(1, 10));
@@ -108,20 +127,23 @@ public class InstagramManager {
                         review.setSourceName("Twitter");
                         review.setCreatedAt(status.getCreatedAt());
                         review.setReviewerThumbnailImgUrl(user.getProfileImageURL());
+                        review.setProductId(product.getId());
                         reviews.add(review);
                     }
                 }
             }
-        }
-        return reviews;
-    }
+        }*/
 
     public String getOAuth() throws TwitterException, IOException {
 
-        twitter = TwitterFactory.getSingleton();
-        twitter.setOAuthConsumer("73RkVGYmdjjTcKM8NAfZmC6SW", "8GIuHRiWgk7i7nd8KaweLOno5hN4ZH2QJAaUBvL3FnfAIziCEs");
-        requestToken = twitter.getOAuthRequestToken();
+        if (Objects.isNull(twitter)) {
+            twitter = TwitterFactory.getSingleton();
+            twitter.setOAuthConsumer("73RkVGYmdjjTcKM8NAfZmC6SW", "8GIuHRiWgk7i7nd8KaweLOno5hN4ZH2QJAaUBvL3FnfAIziCEs");
+            requestToken = twitter.getOAuthRequestToken();
+
+        }
         return requestToken.getAuthorizationURL();
+
     }
 
 

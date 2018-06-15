@@ -91,12 +91,9 @@ public class ProductController {
 
     @RequestMapping(value = "/twitter/oauth",method = RequestMethod.GET)
     public @ResponseBody String getTwitterDetails() {
-        System.out.print("abc");
         try {
            return instagramManager.getOAuth();
-        } catch (TwitterException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
