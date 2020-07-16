@@ -2,28 +2,28 @@ package com.myntra.critico.controller;
 
 import com.myntra.critico.exception.ResourceNotFoundException;
 import com.myntra.critico.manager.InstagramManager;
-import com.myntra.critico.model.Product;
-import com.myntra.critico.model.ProductResponse;
+import com.myntra.critico.model.*;
 import com.myntra.critico.model.Review;
-import com.myntra.critico.model.Review;
+import com.myntra.critico.repository.LeaderBoardRepository;
 import com.myntra.critico.repository.ProductRepository;
 import com.myntra.critico.repository.ReviewRepository;
 import org.jinstagram.entity.users.basicinfo.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.web.bind.annotation.*;
 import twitter4j.TwitterException;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Objects;
+import java.util.*;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/api")
 public class ProductController {
+
+    @Autowired
+    LeaderBoardRepository leaderBoardRepository;
 
     @Autowired
     ProductRepository productRepository;
@@ -126,6 +126,36 @@ public class ProductController {
         return null;
     }
 
+    @PostMapping("/leaderboard")
+    public LeaderBoardEntry createLeaderBoardEntry(@Valid @RequestBody LeaderBoardEntry leaderBoardEntry) {
+        LeaderBoardEntry leaderBoardEntry1 = new LeaderBoardEntry();
+        leaderBoardEntry1.setEmailId(leaderBoardEntry.getEmailId());
+        List<LeaderBoardEntry> leaderBoardEntries = leaderBoardRepository.findAll(Example.of(leaderBoardEntry1));
+        System.out.println(leaderBoardEntries.size());
+        if(leaderBoardEntries != null && !leaderBoardEntries.isEmpty()) {
+            if(leaderBoardEntries.get(0).getTimeTaken() <= leaderBoardEntry.getTimeTaken()) {
+                System.out.println("No update needed");
+                return leaderBoardEntries.get(0);
+            }
+            System.out.println("Updating");
+            leaderBoardEntry.setId(leaderBoardEntries.get(0).getId());
+        }
+        return leaderBoardRepository.save(leaderBoardEntry);
+    }
+
+    @RequestMapping(value = "/leaderboard/{fetch}",method = RequestMethod.GET)
+    public @ResponseBody List<LeaderBoardEntry> getLeaderBoard(@PathVariable(value = "fetch") Long fetchSize) {
+        System.out.println("Fetching leaderboard with size "+fetchSize);
+
+        List<LeaderBoardEntry> leaderBoardEntries = leaderBoardRepository.findAll();
+        Comparator<LeaderBoardEntry> comparator = (o1, o2) -> (int) (o1.getTimeTaken() - o2.getTimeTaken());
+        leaderBoardEntries.sort(comparator);
+        if(Objects.isNull(leaderBoardEntries)) {
+            return null;
+        }
+        return leaderBoardEntries.subList(0, Math.min(fetchSize.intValue(), leaderBoardEntries.size()));
+//        return leaderBoardEntries;
+    }
 
 
     /*
